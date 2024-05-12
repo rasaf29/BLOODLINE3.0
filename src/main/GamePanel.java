@@ -2,14 +2,13 @@ package main;
 
 import entity.Entity;
 import entity.Player;
-import object.SuperObject;
-import org.w3c.dom.ls.LSOutput;
 import tile.TileManager;
 
 import javax.swing.*;
-import javax.swing.plaf.TableUI;
-import javax.swing.plaf.synth.SynthOptionPaneUI;
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class GamePanel extends JPanel implements  Runnable{
 
@@ -40,8 +39,10 @@ public class GamePanel extends JPanel implements  Runnable{
     public Player player = new Player(this, keyH);
     public AssetSetter assetSetter = new AssetSetter(this);
     public UI ui = new UI(this);
-    public SuperObject obj[] = new SuperObject[10];
+    public Entity obj[] = new Entity[10];
     public Entity npc[] = new Entity[10];
+
+    ArrayList<Entity> entityList = new ArrayList<>();
 
     int playerX = 100;
     int playerY = 100;
@@ -123,20 +124,49 @@ public class GamePanel extends JPanel implements  Runnable{
         }
         else {
             tileM.draw(g2);
-
-            for(int i = 0; i < obj.length; i++) {
-                if (obj[i] != null) {
-                    obj[i].draw(g2, this);
+            entityList.add(player);
+            for (int i = 0; i < npc.length; ++i) {
+                if (npc[i] != null) {
+                    entityList.add(npc[i]);
                 }
             }
-            for (int i = 0; i < npc.length; i++) {
-                if(npc[i] != null) {
-                    npc[i].draw(g2);
+            for (int i = 0; i < obj.length; i++) {
+                if(obj[i] != null) {
+                    entityList.add(obj[i]);
                 }
             }
+            //player.draw(g2);
 
+            //SORTARE
+            Collections.sort(entityList, new Comparator<Entity>() {
+                @Override
+                public int compare(Entity e1, Entity e2) {
+                    int result = Integer.compare(e1.worldy, e2.worldy);
+                    return result;
+                }
+            });
+            for(int i = 0; i < entityList.size(); i++) {
+                entityList.get(i).draw(g2);
+            }
+            //GOLIRE LISTA
+            /*for(int i = 0; i < entityList.size(); i++) {
+                entityList.remove(i);
+            }*/
 
-            player.draw(g2);
+            entityList.clear();
+            if (keyH.check == true) {
+                g2.setFont(new Font("Times New Roman", Font.PLAIN, 20));
+                g2.setColor(Color.white);
+                int x = 10;
+                int y = 400;
+                int lineHeight = 20;
+
+                g2.drawString("WorldX:" + player.worldx, x, y); y += lineHeight;
+                g2.drawString("WorldY:" + player.worldy, x, y); y += lineHeight;
+                g2.drawString("Col:" + (player.worldx + player.solidArea.x) / tileSize, x, y); y += lineHeight;
+                g2.drawString("Row:" + (player.worldy + player.solidArea.y) / tileSize, x, y); y += lineHeight;
+            }
+
             ui.draw(g2);
         }
 

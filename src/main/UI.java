@@ -1,9 +1,7 @@
 package main;
 
-import object.OBJ_Door;
+import entity.Entity;
 import object.OBJ_HP;
-import object.OBJ_Key;
-import object.SuperObject;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -29,7 +27,7 @@ public class UI {
         //OBJ_Key key = new OBJ_Key(gp);
         //keyImage = key.image;
 
-        SuperObject heart = new OBJ_HP(gp);
+        Entity heart = new OBJ_HP(gp);
         HP_F = heart.image;
         HP_H = heart.image2;
         HP_E = heart.image3;

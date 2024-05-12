@@ -6,6 +6,8 @@ import java.awt.event.KeyListener;
 public class KeyHandler implements KeyListener {
 
     public boolean upPressed, downPressed, leftPressed, rightPressed;
+
+    boolean check  = false;
     GamePanel gp;
 
     public KeyHandler(GamePanel gp) {
@@ -32,6 +34,7 @@ public class KeyHandler implements KeyListener {
                     gp.ui.commandNum = 2;
                 }
             }
+
             if (code == KeyEvent.VK_ENTER) {
              if (gp.ui.commandNum == 0) {
                  gp.gameState = gp.playState;
@@ -56,6 +59,17 @@ public class KeyHandler implements KeyListener {
             }
             if (code == KeyEvent.VK_A) {
                 leftPressed = true;
+            }
+            if (code == KeyEvent.VK_T) {
+                if (check == false) {
+                    check = true;
+                }
+                else if (check == true) {
+                    check = false;
+                }
+            }
+            if (code == KeyEvent.VK_R) {
+                gp.tileM.loadMap("/maps/world01.txt");
             }
         }
             if (code == KeyEvent.VK_P) {
