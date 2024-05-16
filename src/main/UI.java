@@ -2,6 +2,7 @@ package main;
 
 import entity.Entity;
 import object.OBJ_HP;
+import object.OBJ_Key;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -103,6 +104,51 @@ public class UI {
                 drawPlayerLife();
                 drawDialogueScreen();
             }
+            if (gp.gameState == gp.gameOverState) {
+                drawGameOverScreen();
+            }
+        }
+
+    }
+
+    public void drawGameOverScreen() {
+
+        g2.setColor(new Color(0,0,0, 100));
+        g2.fillRect(0, 0, gp.screenWidth, gp.screenHeight);
+
+        int x;
+        int y;
+        String text;
+        g2.setFont(g2.getFont().deriveFont(Font.TYPE1_FONT, 100F));
+
+        text = "Ai murit";
+        // UMBRE
+        g2.setColor(Color.black);
+        x = getXforCenteredText(text);
+        y = gp.tileSize * 4;
+        g2.drawString(text, x, y);
+        // MAIN
+        g2.setColor(Color.red);
+        g2.drawString(text, x - 4, y - 4);
+
+        // REINCERCARE
+
+        g2.setFont(g2.getFont().deriveFont(30F));
+        text = "RETRY";
+        x = getXforCenteredText(text);
+        y += gp.tileSize * 4;
+        g2.drawString(text, x, y);
+        if (commandNum == 0) {
+            g2.drawString("~", x - 40, y);
+        }
+
+        text = "QUIT";
+        x = getXforCenteredText(text);
+        y += 45;
+        g2.drawString(text, x, y);
+
+        if (commandNum == 1) {
+            g2.drawString("~", x - 40, y);
         }
 
     }
@@ -188,13 +234,19 @@ public class UI {
         height = gp.tileSize * 4;
         drawSubWindow(x, y ,width, height);
 
+
+        g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 25F));
         x += gp.tileSize;
         y += gp.tileSize;
-        g2.drawString(currentDialogue, x ,y );
+        for(String line : currentDialogue.split("\n")) {
+            g2.drawString(line, x, y);
+            y+= 40;
+        }
+       // g2.drawString(currentDialogue, x ,y );
     }
 
     public void drawSubWindow(int x, int y, int width, int height) {
-        Color c = new Color(0,0,0, 150);
+        Color c = new Color(0,0,0, 200);
         g2.setColor(c);
         g2.fillRoundRect(x, y , width, height, 20 ,20);
 

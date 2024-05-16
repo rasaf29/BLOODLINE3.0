@@ -1,11 +1,14 @@
 package main;
 
+import entity.Player;
+
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
+
 public class KeyHandler implements KeyListener {
 
-    public boolean upPressed, downPressed, leftPressed, rightPressed;
+    public boolean upPressed, downPressed, leftPressed, rightPressed, enterPressed;
 
     boolean check  = false;
     GamePanel gp;
@@ -47,7 +50,7 @@ public class KeyHandler implements KeyListener {
              }
             }
         }
-        if (gp.gameState == gp.playState) {
+        else if (gp.gameState == gp.playState) {
             if (code == KeyEvent.VK_W) {
                 upPressed = true;
             }
@@ -60,6 +63,9 @@ public class KeyHandler implements KeyListener {
             if (code == KeyEvent.VK_A) {
                 leftPressed = true;
             }
+            if (code == KeyEvent.VK_E) {
+                enterPressed = true;
+            }
             if (code == KeyEvent.VK_T) {
                 if (check == false) {
                     check = true;
@@ -68,9 +74,7 @@ public class KeyHandler implements KeyListener {
                     check = false;
                 }
             }
-            if (code == KeyEvent.VK_R) {
-                gp.tileM.loadMap("/maps/world01.txt");
-            }
+
         }
             if (code == KeyEvent.VK_P) {
                 if (gp.gameState == gp.playState) {
@@ -80,6 +84,43 @@ public class KeyHandler implements KeyListener {
                 }
             }
 
+            else if (gp.gameState == gp.dialogueState) {
+                 if (code == KeyEvent.VK_E) {
+                     gp.gameState = gp.playState;
+                 }
+                 if (code == KeyEvent.VK_ENTER) {
+
+                 }
+                }
+            else if (gp.gameState == gp.gameOverState) {
+                gameOverState(code);
+            }
+
+    }
+
+    public void gameOverState(int code) {
+        if (code == KeyEvent.VK_W) {
+            gp.ui.commandNum--;
+            if (gp.ui.commandNum < 0) {
+                gp.ui.commandNum = 0;
+            }
+        }
+        if (code == KeyEvent.VK_S) {
+            gp.ui.commandNum++;
+            if (gp.ui.commandNum > 1) {
+                gp.ui.commandNum = 1;
+            }
+        }
+        if (code == KeyEvent.VK_ENTER) {
+            if (gp.ui.commandNum == 0) {
+                gp.gameState = gp.playState;
+                gp.retry();
+            }
+            else if (gp.ui.commandNum == 1) {
+                gp.gameState = gp.titleState;
+                gp.restart();
+            }
+        }
     }
 
     @Override

@@ -13,23 +13,32 @@ public class Entity {
     public int speed;
     GamePanel gp;
     public BufferedImage up1, up2, down1, down2, left1, left2, right1, right2;
+
+    public BufferedImage atacSus1, atacSus2 , atacJos1, atacJos2 , atacStanga1, atacStanga2, atacDreapta1, atacDreapta2;
     public String direction = "down";
 
     public int spriteCounter = 0;
     public int spriteNum = 1;
     public Rectangle solidArea = new Rectangle(0, 0, 48, 48);
+    public Rectangle attackArea = new Rectangle(0,0,0,0);
     public int solidAreaDefaultX, solidAreaDefaultY;
     public boolean collisionOn = false;
     public int actionCounter = 0;
     String dialogues[] = new String[20];
 
+    int dialogueIndex = 0;
     public BufferedImage image, image2, image3;
     public String name;
     public boolean collision = false;
+    public boolean attacking = false;
 
-
+    public int type; // 0 - erou, 1 - npc, 2 - mobi
     public int maxHP;
     public int HP;
+
+    public boolean invincible = false;
+
+    public int invincibleCounter = 0;
     public Entity(GamePanel gp) {
         this.gp = gp;
     }
@@ -45,7 +54,17 @@ public class Entity {
         collisionOn = false;
         gp.cChecker.checkTile(this);
         gp.cChecker.checkObject(this, false);
-        gp.cChecker.checkPlayer(this);
+        gp.cChecker.checkEntity(this, gp.npc);
+        gp.cChecker.checkEntity(this, gp.monster);
+        boolean contactPlayer = gp.cChecker.checkPlayer(this);
+
+        if (this.type == 2 && contactPlayer == true) {
+            if (gp.player.invincible == false) {
+                gp.player.HP -= 1;
+                gp.player.invincible = true;
+                // imi iau 1 damage si dupa sunt invincibil pt 3 secunde
+            }
+        }
         if (collisionOn == false) {
             switch (direction) {
                 case "up":
@@ -72,6 +91,13 @@ public class Entity {
                 spriteNum = 1;
             }
             spriteCounter = 0;
+        }
+        if (invincible == true) {
+            invincibleCounter++;
+            if(invincibleCounter > 30) {
+                invincible = false;
+                invincibleCounter = 0;
+            }
         }
     }
     public void draw(Graphics2D g2) {
@@ -115,17 +141,21 @@ public class Entity {
                     }
                     break;
             }
+            if(invincible == true) {
+                g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.2f));
+            }
             g2.drawImage( image,screenX, screenY, gp.tileSize, gp.tileSize, null);
+            g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
         }
     }
-    public BufferedImage setup(String imagePath) {
+    public BufferedImage setup(String imagePath, int width, int height) {
         UtilityTool uTool = new UtilityTool();
         BufferedImage image = null;
 
         try {
 
             image = ImageIO.read(getClass().getResourceAsStream(  imagePath + ".png"));
-            image = uTool.scaleImage(image, gp.tileSize, gp.tileSize);
+            image = uTool.scaleImage(image, width, height);
 
         } catch (IOException e) {
             e.printStackTrace();

@@ -10,7 +10,7 @@ import java.util.Random;
 
 public class NPC_wizard extends Entity{
 
-    GamePanel gp;
+
     public NPC_wizard(GamePanel gp) {
         super(gp);
 
@@ -22,19 +22,22 @@ public class NPC_wizard extends Entity{
 
     public void getImage() {
 
-        up1 = setup("/npc/wizard_sus1");
-        up2 = setup("/npc/wizard_sus2");
-        down1 = setup("/npc/wizard_jos1");
-        down2 = setup("/npc/wizard_jos_2");
-        left1 = setup("/npc/wizard_1s");
-        left2 = setup("/npc/wizard_2s");
-        right1 = setup("/npc/wizard_1d");
-        right2 = setup("/npc/wizard_2d");
+        up1 = setup("/npc/wizard_sus1", gp.tileSize, gp.tileSize);
+        up2 = setup("/npc/wizard_sus2", gp.tileSize, gp.tileSize);
+        down1 = setup("/npc/wizard_jos1", gp.tileSize, gp.tileSize);
+        down2 = setup("/npc/wizard_jos_2", gp.tileSize, gp.tileSize);
+        left1 = setup("/npc/wizard_1s", gp.tileSize, gp.tileSize);
+        left2 = setup("/npc/wizard_2s", gp.tileSize, gp.tileSize);
+        right1 = setup("/npc/wizard_1d", gp.tileSize, gp.tileSize);
+        right2 = setup("/npc/wizard_2d", gp.tileSize, gp.tileSize);
     }
 
     public void setDialogue() {
 
-        dialogues[0] = "Dorian";
+        dialogues[0] = "Dorian, esti in viata!\n";
+        dialogues[1] = "Nu ma asteptam sa te mai vad..\n";
+        dialogues[2] = "Lorian se afla la castel, trebuie sa\n il infrangi!";
+        dialogues[3] = "Pentru a trece mai departe,\n ai nevoie de ochiul lui Astaroth";
     }
     public void setAction() {
         actionCounter++;
@@ -59,6 +62,10 @@ public class NPC_wizard extends Entity{
     }
 
     public void speak() {
-        gp.ui.currentDialogue = dialogues[0];
+        if (dialogues[dialogueIndex] == null) {
+            dialogueIndex = 0;
+        }
+        gp.ui.currentDialogue = dialogues[dialogueIndex];
+        dialogueIndex++;
     }
 }
